@@ -1,0 +1,16 @@
+# Credenciales — nunca subir al repositorio
+.env
+ 
+# Dataset masivo — demasiado grande para Git
+*.csv
+ 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+ 
+# Logs generados por el script de carga
+*.log
+ 
