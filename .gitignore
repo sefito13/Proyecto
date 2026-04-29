@@ -1,16 +1,19 @@
-# Credenciales — nunca subir al repositorio
 .env
- 
-# Dataset masivo — demasiado grande para Git
 *.csv
- 
-# Python
+*.parquet
+venv/
+.venv/
+env/
 __pycache__/
 *.pyc
 *.pyo
-.venv/
-venv/
- 
-# Logs generados por el script de carga
+*.pyd
 *.log
- 
+logs/
+postgres_data/
+.vscode/
+.idea/
+*.suo
+*.user
+.DS_Store
+Thumbs.db

@@ -4,32 +4,28 @@
 
 ```
 proyecto/
-├── .env                     ← credenciales reales (NO subir a Git)
-├── .env.example             ← plantilla sin credenciales (sí subir a Git)
-├── .gitignore               ← excluye .env y el CSV
-├── docker-compose.yml       ← levanta PostgreSQL
-├── cargar_datos.py          ← limpia y carga el CSV a PostgreSQL
+├── .env                      ← credenciales reales
+├── .gitignore
+├── docker-compose.yml        ← levanta PostgreSQL
+├── requirements.txt          ← dependencias Python
+├── ETL.py                    ← limpieza y carga del CSV
 ├── init/
-│   └── 01_create_tables.sql ← crea las 7 tablas automáticamente
-└── instagram_users_lifestyle.csv
+│   └── 01_create_tables.sql  ← crea las 7 tablas automáticamente
+└── instagram_users_lifestyle.csv  ← dataset
 ```
 
 ---
 
 ## Paso 1 — Configurar credenciales
 
-```bash
-cp .env.example .env
-```
-
 Edita el `.env` y completa los valores:
 
 ```
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=tu_contraseña_segura
-POSTGRES_DB=instagram_lifestyle
+POSTGRES_DB=proyectdb
 POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
+POSTGRES_PORT=5433
 CSV_PATH=instagram_users_lifestyle.csv
 ```
 
@@ -41,37 +37,42 @@ CSV_PATH=instagram_users_lifestyle.csv
 docker-compose up -d
 ```
 
-PostgreSQL arranca en `localhost:5432`.  
-El script `init/01_create_tables.sql` crea las 7 tablas **automáticamente** dentro de una transacción.
-
 ---
 
-## Paso 3 — Verificar que el contenedor está listo
+### 3. Crear entorno virtual e instalar dependencias
+
+```bash
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install -r requirements.txt
+```
+
+### 4. Levantar PostgreSQL con Docker
+
+```bash
+docker-compose up -d
+```
+
+El script `init/01_create_tables.sql` crea las 7 tablas automáticamente al iniciar el contenedor.
+
+Verifica que esté listo:
 
 ```bash
 docker-compose ps
+
 ```
+### 5. Cargar el dataset
 
-Debe aparecer el estado `healthy` antes de continuar.
-
----
-
-## Paso 4 — Instalar dependencias Python
+Coloca el archivo `instagram_users_lifestyle.csv` en la raíz del proyecto y ejecuta:
 
 ```bash
-pip install pandas sqlalchemy psycopg2-binary python-dotenv
-```
-
----
-
-## Paso 5 — Cargar el CSV
-
-```bash
-python cargar_datos.py
+python ETL.py
 ```
 
 El script:
-1. Lee las credenciales desde `.env` (nunca hardcodeadas)
+1. Lee las credenciales desde `.env`
 2. Lee el CSV (1,547,896 filas)
 3. Normaliza `education_level` y corrige columnas booleanas
 4. Elimina `app_name` (valor constante)
