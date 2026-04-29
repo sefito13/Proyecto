@@ -92,9 +92,6 @@ tail -f carga.log
 # Conectarse a PostgreSQL dentro del contenedor
 docker exec -it instagram_db psql -U admin -d instagram_lifestyle
 
-# Verificar tablas creadas
-\dt
-
 # Detener contenedor (conserva los datos)
 docker-compose down
 
